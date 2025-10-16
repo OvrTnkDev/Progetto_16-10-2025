@@ -2,10 +2,8 @@
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-#region INTERFACCE
-
-#endregion
+using System.Xml.Linq;
+using System.Collections.Generic;
 
 #region SINGLETON - SocialNetwork
 ///<summary> Singleton: garantisce che una classe abbia una sola istanzae fornisce un punto di accesso globale a essa.</summary>
@@ -25,7 +23,7 @@ public sealed class SocialNetWork : IObservable
         post.Add(p);
         Notify(p);
     }
-    
+
     public List<Utenti> GetUtenti() => utenti;
     public List<Post> GetPost() => post;
 
@@ -71,9 +69,9 @@ public abstract class Utenti : IObserver
 
     public void CaricaPost(Post post)
     {
-        if(Followings.Contains(post.Autore))
+        if(Followings.Contains(post.Author))
         {
-            Console.WriteLine($"Notifica per {Nome}: {post.Autore.Name} ha pubblicato un nuovo post");
+            Console.WriteLine($"Notifica per {Nome}: {post.Author.Nome} ha pubblicato un nuovo post");
         }
     }
 
@@ -156,39 +154,57 @@ public interface IObservable
 }
 #endregion
 
-
 #region CLASSI CONCRETE
-// 2. ConcreteComponent: oggetto base senza decorazioni
-public class Pizza : IPiatto
+public class Post
 {
-    public string Descrizione() => "Pizza Margherita:\n";
-    public string Prepara() => "Preparazione della pizza in corso...\n";
-}
+    public string Content { get; set; }
+    public Utenti Author { get; set; }
+    public DateTime Date { get; set; }
+    public List<string> Hashtags { get; set; } = new List<string>();
 
-public class Hamburger : IPiatto
-{
-    public string Descrizione() => "Hamburger:\n";
-    public string Prepara() => "Preparazione dell'hamburger in corso...\n";
-}
-
-public class Insalata : IPiatto
-{
-    public string Descrizione() => "Insalata Mista:\n";
-    public string Prepara() => "Preparazione dell'insalata in corso...\n";
-}
-
-public class Chef
-{
-    private IPreparazioneStrategia _strategia;
-    public Chef(IPreparazioneStrategia strategia)
+    public Post(Utenti author, string content)
     {
-        _strategia = strategia;
+        Author = author;
+        Content = content;
+        Date = DateTime.Now;
     }
-    public void PreparaPiatto(IPiatto piatto)
+
+    public virtual void Show()
     {
-        string descrizione = piatto.Descrizione();
-        string preparazione = _strategia.Prepara(descrizione);
-        Console.WriteLine(preparazione);
+        Console.WriteLine($"[{Date}] {Author.Nome}: {Content}");
+        if (Hashtags.Any())
+            Console.WriteLine($"Hashtags: {string.Join(", ", Hashtags)}");
+    }
+}
+
+public class ImagePost : PostDecorator
+{
+    public string ImageUrl { get; set; }
+    public ImagePost(Post post, string imageUrl) : base(post)
+    {
+        ImageUrl = imageUrl;
+    }
+
+    public override void Show()
+    {
+        base.Show();
+        Console.WriteLine($"[Immagine allegata: {ImageUrl}]");
+    }
+}
+
+public class TagPost : PostDecorator
+{
+    public List<string> Tags { get; set; } = new List<string>();
+    public TagPost(Post post, List<string> tags) : base(post)
+    {
+        Tags = tags;
+    }
+
+    public override void Show()
+    {
+        base.Show();
+        if (Tags.Any())
+            Console.WriteLine($"Tag: {string.Join(", ", Tags)}");
     }
 }
 #endregion
@@ -196,66 +212,18 @@ public class Chef
 #region DECORATORE ASTRATTO
 // 3. Decorator: classe astratta che implementa IComponent
 //    e incapsula un IComponent interno
-public abstract class IngredientiExtra : IPiatto
+public abstract class PostDecorator : Post
 {
-    // Riferimento al componente "decorato"
-    protected IPiatto _piatto;
-
-    // Costruttore: richiede un componente da decorare
-    protected IngredientiExtra(IPiatto piatto)
+    protected Post post;
+    public PostDecorator(Post post) : base(post.Author, post.Content)
     {
-        _piatto = piatto;
+        this.post = post;
     }
 
-    // Delegazione dell'operazione al componente interno
-    public virtual string Descrizione() => _piatto.Descrizione();
-    public virtual string Prepara() => _piatto.Prepara();
-}
-#endregion
-
-#region DECORATORE CONCRETO
-// 4. ConcreteDecoratorA: aggiunge comportamento prima e dopo la chiamata
-public class ConFormaggio : IngredientiExtra
-{
-    public ConFormaggio(IPiatto piatto)
-        : base(piatto) { }
-
-    public override string Descrizione() => base.Descrizione() + "\n+ Formaggio";
-}
-
-public class ConBacon : IngredientiExtra
-{
-    public ConBacon(IPiatto piatto)
-        : base(piatto) { }
-
-    public override string Descrizione() => base.Descrizione() + "\n+ Bacon";
-}
-
-public class ConSalsa : IngredientiExtra
-{
-    public ConSalsa(IPiatto piatto)
-        : base(piatto) { }
-
-    public override string Descrizione() => base.Descrizione() + "\n+ Salsa";
-}
-#endregion
-
-#region FACTORY
-public class PiattoFactory
-{
-    private static PiattoFactory _instance;
-
-    private PiattoFactory() { }
-
-    public static PiattoFactory Instance => _instance ??= new PiattoFactory();
-
-    public IPiatto CreaPiatto(string tipo) => tipo.ToLower().Trim() switch
+    public override void Show()
     {
-        "pizza" => new Pizza(),
-        "hamburger" => new Hamburger(),
-        "insalata" => new Insalata(),
-        _ => null
-    };
+        post.Show();
+    }
 }
 #endregion
 
@@ -269,7 +237,7 @@ public class FeedData : IFeed
 {
     public List<Post> getFeed(List<Post> post, Utenti users)
     {
-        return post.OrderByDescending(p => p.Data).ToList();
+        return post.OrderByDescending(p => p.Date).ToList();
     }
 }
 
@@ -283,7 +251,7 @@ public class FeedHashtag : IFeed
         
     public List<Post> getFeed(List<Post> post, Utenti users)
     {
-        return post.Where(p => p.Hashtag.Contains(hashtag)).ToList();
+        return post.Where(p => p.Hashtags.Contains(hashtag)).ToList();
     }
 }
 #endregion
