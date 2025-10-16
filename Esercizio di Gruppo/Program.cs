@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
 
-#region INTERFACCIA
+#region INTERFACCE
 
 #endregion
 
-#region SINGLETON
+#region SINGLETON - SocialNetwork
 ///<summary> Singleton: garantisce che una classe abbia una sola istanzae fornisce un punto di accesso globale a essa.</summary>
 /// <typeparam name="T">Tipo della classe singleton</typeparam>
 public sealed class SocialNetWork
@@ -19,6 +20,91 @@ public sealed class SocialNetWork
     public void AggiungiPost(Post p) => post.Add(p);
     public List<Utenti> GetUtenti() => utenti;
     public List<Post> GetPost() => post;
+}
+#endregion
+
+#region FACTORY METHOD
+public abstract class Utenti
+{
+    public string Nome { get; set; }
+    public List<Utenti> Followings = new();
+    public List<Post> Posts = new();
+
+    public void Segui(Utenti utente)
+    {
+        Followings.Add(utente);
+        Console.WriteLine($"Lista dei seguiti aggiornata!");
+    }
+
+    public void AggiungiPost(Post post)
+    {
+        Posts.Add(post);
+        SocialNetWork.Instance.AggiungiPost(post);
+        Console.WriteLine($"Post Pubblicato!");
+    }
+
+    public abstract string MostraInfo();
+}
+
+public class UtenteBase : Utenti
+{
+
+    public UtenteBase(string nome)
+    {
+        Nome = nome;
+    }
+    public override string MostraInfo()
+    {
+        return $"Utente Base Creato! Ciao {Nome}";
+    }
+}
+
+public class UtentePremium : Utenti
+{
+    public UtentePremium(string nome)
+    {
+        Nome = nome;
+    }
+
+    public override string MostraInfo()
+    {
+        return $"Utente Premium Creato! Ciao {Nome}";
+    }
+}
+
+public class UtenteBusiness : Utenti
+{
+    public UtenteBusiness(string nome)
+    {
+        Nome = nome;
+    }
+
+    public override string MostraInfo()
+    {
+        return $"Utente Business Creato! Ciao {Nome}";
+    }
+}
+
+public static class UtentiFactory
+{
+    public static Utenti CreaUtente(string tipo, string nome)
+    {
+        switch (tipo.ToLower())
+        {
+            case "base":
+                return new UtenteBase(nome);
+
+            case "premium":
+                return new UtentePremium(nome);
+
+            case "business":
+                return new UtenteBusiness(nome);
+
+            default:
+                Console.WriteLine($"Errore: tipo non valido!");
+                return null;
+        }
+    }
 }
 #endregion
 
