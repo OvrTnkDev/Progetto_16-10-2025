@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 #region INTERFACCE
@@ -9,22 +10,47 @@ using System.Runtime.InteropServices;
 #region SINGLETON - SocialNetwork
 ///<summary> Singleton: garantisce che una classe abbia una sola istanzae fornisce un punto di accesso globale a essa.</summary>
 /// <typeparam name="T">Tipo della classe singleton</typeparam>
-public sealed class SocialNetWork
+public sealed class SocialNetWork : IObservable
 {
     List<Utenti> utenti = new List<Utenti>();
     List<Post> post = new List<Post>();
+
+    private List<IObserver> obs = new List<IObserver>();
     private static SocialNetWork _instance;
     private SocialNetWork() { }
     public static SocialNetWork Instance => _instance ??= new SocialNetWork();
     public void AggiungiUtente(Utenti u) => utenti.Add(u);
-    public void AggiungiPost(Post p) => post.Add(p);
+    public void AggiungiPost(Post p)
+    {
+        post.Add(p);
+        Notify(p);
+    }
+    
     public List<Utenti> GetUtenti() => utenti;
     public List<Post> GetPost() => post;
+
+    public void Attach(IObserver observer)
+    {
+        obs.Add(observer);
+    }
+
+    public void Detach(IObserver observer)
+    {
+        obs.Remove(observer);
+    }
+
+    public void Notify(Post post)
+    {
+        foreach (var observer in obs)
+        {
+            obs.CaricaPost(post);
+        }
+    }
 }
 #endregion
 
 #region FACTORY METHOD
-public abstract class Utenti
+public abstract class Utenti : IObserver
 {
     public string Nome { get; set; }
     public List<Utenti> Followings = new();
@@ -41,6 +67,14 @@ public abstract class Utenti
         Posts.Add(post);
         SocialNetWork.Instance.AggiungiPost(post);
         Console.WriteLine($"Post Pubblicato!");
+    }
+
+    public void CaricaPost(Post post)
+    {
+        if(Followings.Contains(post.Autore))
+        {
+            Console.WriteLine($"Notifica per {Nome}: {post.Autore.Name} ha pubblicato un nuovo post");
+        }
     }
 
     public abstract string MostraInfo();
@@ -107,6 +141,21 @@ public static class UtentiFactory
     }
 }
 #endregion
+
+#region OBSERVER
+public interface IObserver
+{
+    void CaricaPost(Post post);
+}
+
+public interface IObservable
+{
+    void Attach(IObserver obs);
+    void Detach(IObserver obs);
+    void Notify(Post post);
+}
+#endregion
+
 
 #region CLASSI CONCRETE
 // 2. ConcreteComponent: oggetto base senza decorazioni
@@ -211,19 +260,31 @@ public class PiattoFactory
 #endregion
 
 #region STRATEGY
-public class Fritto : IPreparazioneStrategia
+public interface IFeed
 {
-    public string Prepara(string descrizione) => descrizione + " - Metodo di preparazione: Fritto\n";
+    List<Post> getFeed(List<Post> post, Utenti users);
 }
 
-public class AlForno : IPreparazioneStrategia
+public class FeedData : IFeed
 {
-    public string Prepara(string descrizione) => descrizione + " - Metodo di preparazione: Al Forno\n";
+    public List<Post> getFeed(List<Post> post, Utenti users)
+    {
+        return post.OrderByDescending(p => p.Data).ToList();
+    }
 }
 
-public class AllaGriglia : IPreparazioneStrategia
+public class FeedHashtag : IFeed
 {
-    public string Prepara(string descrizione) => descrizione + " - Metodo di preparazione: Alla Griglia\n";
+    private string hashtag;
+    public FeedHashtag(string hashtag)
+    {
+        this.hashtag = hashtag;
+    }
+        
+    public List<Post> getFeed(List<Post> post, Utenti users)
+    {
+        return post.Where(p => p.Hashtag.Contains(hashtag)).ToList();
+    }
 }
 #endregion
 
