@@ -5,8 +5,10 @@
 - Michele
 - Marcello
 
+
 # **Creazione di un SocialNetwork**
-## Il programma simula un social network semplificato in cui gli utenti possono:
+
+## **Il programma simula un social network semplificato in cui gli utenti possono:**
 - creare un profilo personale (base, business o influencer),
 - pubblicare post e arricchirli con elementi extra (immagini, tag, hashtag, ecc.),
 - seguire altri utenti e ricevere notifiche quando questi pubblicano,
@@ -14,8 +16,12 @@
 - Il sistema è interamente gestito da un’unica istanza centrale, che controlla utenti, post e notifiche.
 
 ## **Struttura**
-- **Decorator** ---> Tipo Post
+- **Decorator** --> Tipo Post
 - **singleton** -->  SocialNetwork
 - **Factory** -----> Utente
-- **Observer** ----> Notifiche Post
-- **Strategy** ----> Gestione feed
+- **Observer** ---> Notifiche Post
+- **Strategy** ---> Gestione feed
+
+## **Tecnologia**
+- .NET 9.0
+- C#
