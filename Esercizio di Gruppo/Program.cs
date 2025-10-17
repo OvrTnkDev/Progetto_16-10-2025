@@ -41,7 +41,7 @@ public sealed class SocialNetWork : IObservable
     {
         foreach (var observer in obs)
         {
-            obs.CaricaPost(post);
+            observer.CaricaPost(post);
         }
     }
 }
@@ -257,111 +257,5 @@ public class FeedHashtag : IFeed
 #endregion
 
 #region MAIN
-// Esempio di utilizzo (Client)
-class Program
-{
-    static void Main()
-    {
-        Console.Clear();
-        bool continua = true;
 
-        while (continua)
-        {
-            Console.WriteLine("=== Benvenuto nella Cucina dello Chef ===");
-            Console.WriteLine("Scegli il piatto:");
-            Console.WriteLine("1 - Pizza");
-            Console.WriteLine("2 - Hamburger");
-            Console.WriteLine("3 - Insalata");
-            Console.WriteLine("0 - Esci");
-
-            string sceltaBase = Console.ReadLine();
-            IPiatto piatto = sceltaBase switch
-            {
-                "1" => PiattoFactory.Instance.CreaPiatto("pizza"),
-                "2" => PiattoFactory.Instance.CreaPiatto("hamburger"),
-                "3" => PiattoFactory.Instance.CreaPiatto("insalata"),
-                "0" => null,
-                _ => null
-            };
-
-            if (piatto == null)
-            {
-                if (sceltaBase == "0")
-                {
-                    Console.WriteLine("Arrivederci!");
-                    break;
-                }
-                Console.WriteLine("Scelta non valida.\n");
-                continue;
-            }
-
-            bool piattoTerminato = false;
-            while (!piattoTerminato)
-            {
-                Console.WriteLine("\nAggiungi ingredienti extra:");
-                Console.WriteLine("1 - Formaggio");
-                Console.WriteLine("2 - Bacon");
-                Console.WriteLine("3 - Salsa");
-                Console.WriteLine("0 - Nessuna/Finito");
-
-                string sceltaDeco = Console.ReadLine();
-                switch (sceltaDeco)
-                {
-                    case "1":
-                        piatto = new ConFormaggio(piatto);
-                        break;
-                    case "2":
-                        piatto = new ConBacon(piatto);
-                        break;
-                    case "3":
-                        piatto = new ConSalsa(piatto);
-                        break;
-                    case "0":
-                        piattoTerminato = true;
-                        break;
-                    default:
-                        Console.WriteLine("Scelta decorazione non valida.");
-                        break;
-                }
-            }
-
-            bool cotturaTerminata = false;
-            while (!cotturaTerminata)
-            {
-                Console.WriteLine("\nAggiungi ingredienti extra:");
-                Console.WriteLine("1 - Al Forno");
-                Console.WriteLine("2 - Alla Griglia");
-                Console.WriteLine("3 - Fritto");
-                Console.WriteLine("0 - Nessuna/Finito");
-
-                string sceltaCottura = Console.ReadLine();
-                switch (sceltaCottura)
-                {
-                    case "1":
-                        new Chef(new AlForno()).PreparaPiatto(piatto);
-                        cotturaTerminata = true;
-                        break;
-                    case "2":
-                        new Chef(new AllaGriglia()).PreparaPiatto(piatto);
-                        cotturaTerminata = true;
-                        break;
-                    case "3":
-                        new Chef(new Fritto()).PreparaPiatto(piatto);
-                        cotturaTerminata = true;
-                        break;
-                    case "0":
-                        cotturaTerminata = true;
-                        break;
-                    default:
-                        Console.WriteLine($"Scelta non valida");
-                        break;
-                }
-            }
-
-            Console.WriteLine("\nEcco il tuo piatto:");
-            Console.WriteLine(piatto.Descrizione());
-            Console.WriteLine("\n------------------------------\n");
-        }
-    }
-}
 #endregion
