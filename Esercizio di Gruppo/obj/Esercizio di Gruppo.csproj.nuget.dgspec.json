@@ -1,26 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "/home/ovrtnkdev/Documenti/GitHub/Progetto_16-10-2025/Esercizio di Gruppo/Esercizio di Gruppo.csproj": {}
+    "C:\\Users\\miche\\OneDrive\\Desktop\\corsoc#\\Progetto_16-10-2025\\Esercizio di Gruppo\\Esercizio di Gruppo.csproj": {}
   },
   "projects": {
-    "/home/ovrtnkdev/Documenti/GitHub/Progetto_16-10-2025/Esercizio di Gruppo/Esercizio di Gruppo.csproj": {
+    "C:\\Users\\miche\\OneDrive\\Desktop\\corsoc#\\Progetto_16-10-2025\\Esercizio di Gruppo\\Esercizio di Gruppo.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/ovrtnkdev/Documenti/GitHub/Progetto_16-10-2025/Esercizio di Gruppo/Esercizio di Gruppo.csproj",
+        "projectUniqueName": "C:\\Users\\miche\\OneDrive\\Desktop\\corsoc#\\Progetto_16-10-2025\\Esercizio di Gruppo\\Esercizio di Gruppo.csproj",
         "projectName": "Esercizio di Gruppo",
-        "projectPath": "/home/ovrtnkdev/Documenti/GitHub/Progetto_16-10-2025/Esercizio di Gruppo/Esercizio di Gruppo.csproj",
-        "packagesPath": "/home/ovrtnkdev/.nuget/packages/",
-        "outputPath": "/home/ovrtnkdev/Documenti/GitHub/Progetto_16-10-2025/Esercizio di Gruppo/obj/",
+        "projectPath": "C:\\Users\\miche\\OneDrive\\Desktop\\corsoc#\\Progetto_16-10-2025\\Esercizio di Gruppo\\Esercizio di Gruppo.csproj",
+        "packagesPath": "C:\\Users\\miche\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\miche\\OneDrive\\Desktop\\corsoc#\\Progetto_16-10-2025\\Esercizio di Gruppo\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/ovrtnkdev/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\miche\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "/usr/lib64/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -39,7 +38,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -60,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/9.0.110/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
