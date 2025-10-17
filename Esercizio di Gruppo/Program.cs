@@ -255,9 +255,9 @@ public class FeedHashtag : IFeed
 #endregion
 
 #region MAIN
-public class Program
+class Program
 {
-    public static void Main()
+    static void Main()
     {
         var sn = SocialNetWork.Instance;
         bool continua = true;
@@ -272,19 +272,19 @@ public class Program
             Console.WriteLine("4 - Visualizza feed");
             Console.WriteLine("0 - Esci");
 
-            string? scelta = Console.ReadLine();
+            string scelta = Console.ReadLine();
             switch (scelta)
             {
                 case "1":
                     Console.Write("Inserisci il nome utente: ");
-                    string? nome = Console.ReadLine();
+                    string nome = Console.ReadLine();
                     Console.Write("Tipo utente (base/premium/business): ");
-                    string? tipo = Console.ReadLine();
+                    string tipo = Console.ReadLine();
                     var utente = UtentiFactory.CreaUtente(tipo, nome);
                     if (utente != null)
                     {
                         sn.AggiungiUtente(utente);
-                        sn.Attach(utente);
+                        sn.Attach(utente); // per ricevere notifiche
                         Console.WriteLine(utente.MostraInfo());
                     }
                     Console.WriteLine("Premi un tasto per continuare...");
@@ -319,77 +319,98 @@ public class Program
                     }
                     Console.ReadKey();
                     break;
+
                 case "3":
                     if (sn.GetUtenti().Count == 0)
                     {
-                        Console.WriteLine("Non ci sono utenti registrati.");
+                        Console.WriteLine("Non ci sono utenti registrati!");
+                        Console.ReadKey();
                         break;
                     }
-                    Console.WriteLine("Scegli l'autore del post: ");
+
+                    Console.WriteLine("Scegli l'autore del post:");
                     for (int i = 0; i < sn.GetUtenti().Count; i++)
-                    {
-                        Console.WriteLine($"{i}  - {sn.GetUtenti()[i].Nome}");
-                    }
+                        Console.WriteLine($"{i} - {sn.GetUtenti()[i].Nome}");
                     int autoreIndex = int.Parse(Console.ReadLine());
                     var autore = sn.GetUtenti()[autoreIndex];
 
-
-                    Console.WriteLine("Scrivi il contenuto del post: ");
-                    string? contenuto = Console.ReadLine();
+                    Console.Write("Scrivi il contenuto del post: ");
+                    string contenuto = Console.ReadLine();
                     var post = new Post(autore, contenuto);
 
-                    Console.WriteLine("Vuoi inserire hashtag? (s/n): ");
+                    Console.Write("Vuoi aggiungere hashtag? (s/n): ");
                     if (Console.ReadLine().ToLower() == "s")
                     {
-                        Console.WriteLine("Inserisci hashtag separati da spazio: ");
+                        Console.Write("Inserisci hashtag separati da spazio: ");
                         post.Hashtags.AddRange(Console.ReadLine().Split(' '));
                     }
 
-                    Console.WriteLine("Vuoi inserire un'immagine? (s/n): ");
+                    Console.Write("Vuoi aggiungere un'immagine? (s/n): ");
                     if (Console.ReadLine().ToLower() == "s")
                     {
-                        Console.WriteLine("Inserisci URL immagine: ");
+                        Console.Write("Inserisci URL immagine: ");
                         post = new ImagePost(post, Console.ReadLine());
                     }
 
-                    Console.WriteLine("Vuoi inserire tag? (s/n): ");
+                    Console.Write("Vuoi aggiungere tag? (s/n): ");
                     if (Console.ReadLine().ToLower() == "s")
                     {
-                        Console.WriteLine("Inserisci tag separati da spazio: ");
+                        Console.Write("Inserisci tag separati da spazio: ");
                         post = new TagPost(post, Console.ReadLine().Split(' ').ToList());
                     }
 
                     autore.AggiungiPost(post);
-                    Console.WriteLine("Post pubblicato");
+                    Console.WriteLine("Post pubblicato!");
+                    Console.ReadKey();
                     break;
+
                 case "4":
                     if (sn.GetPost().Count == 0)
                     {
-                        Console.WriteLine("Non ci sono post");
+                        Console.WriteLine("Non ci sono post!");
+                        Console.ReadKey();
                         break;
                     }
 
-                    Console.WriteLine("Scegli tipo di feed: ");
-                    Console.WriteLine("1 - Per Data");
-                    Console.WriteLine("2 - Per Hashtag");
-                    IFeed feedStrategy;
-                    string? sceltaFeed = Console.ReadLine();
-                    switch (sceltaFeed)
-                    {
-                        case "1":
-                            feedStrategy = new FeedData();
-                            break;
-                        case "2":
-                            Console.WriteLine("Scegli hashtag per filtrare: ");
+                    Console.WriteLine("Scegli il tipo di feed:");
+                    Console.WriteLine("1 - Ordine per data");
+                    Console.WriteLine("2 - Filtra per hashtag");
+                    string feedScelta = Console.ReadLine();
 
-                            break;
+                    IFeed feedStrategy;
+
+                    if (feedScelta == "2")
+                    {
+                        Console.Write("Inserisci hashtag da filtrare (senza #): ");
+                        string tag = Console.ReadLine();
+                        feedStrategy = new FeedHashtag(tag);
+                    }
+                    else
+                    {
+                        feedStrategy = new FeedData();
                     }
 
+                    Console.WriteLine("\nFeed:");
+                    var feed = feedStrategy.getFeed(sn.GetPost(), null);
+                    foreach (var p in feed)
+                        p.Show();
+
+                    Console.WriteLine("\nPremi un tasto per continuare...");
+                    Console.ReadKey();
+                    break;
+
+                case "0":
+                    continua = false;
+                    break;
+
+                default:
+                    Console.WriteLine("Scelta non valida!");
+                    Console.ReadKey();
                     break;
             }
-
         }
     }
-}    
+}
+    
 
 #endregion
