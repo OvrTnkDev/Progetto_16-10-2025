@@ -1,0 +1,15 @@
+C:\Users\miche\OneDrive\Desktop\corsoc#\Progetto_16-10-2025\Esercizio di Gruppo\bin\Debug\net9.0\Esercizio di Gruppo.exe
+C:\Users\miche\OneDrive\Desktop\corsoc#\Progetto_16-10-2025\Esercizio di Gruppo\bin\Debug\net9.0\Esercizio di Gruppo.deps.json
+C:\Users\miche\OneDrive\Desktop\corsoc#\Progetto_16-10-2025\Esercizio di Gruppo\bin\Debug\net9.0\Esercizio di Gruppo.runtimeconfig.json
+C:\Users\miche\OneDrive\Desktop\corsoc#\Progetto_16-10-2025\Esercizio di Gruppo\bin\Debug\net9.0\Esercizio di Gruppo.dll
+C:\Users\miche\OneDrive\Desktop\corsoc#\Progetto_16-10-2025\Esercizio di Gruppo\bin\Debug\net9.0\Esercizio di Gruppo.pdb
+C:\Users\miche\OneDrive\Desktop\corsoc#\Progetto_16-10-2025\Esercizio di Gruppo\obj\Debug\net9.0\Esercizio di Gruppo.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\miche\OneDrive\Desktop\corsoc#\Progetto_16-10-2025\Esercizio di Gruppo\obj\Debug\net9.0\Esercizio di Gruppo.AssemblyInfoInputs.cache
+C:\Users\miche\OneDrive\Desktop\corsoc#\Progetto_16-10-2025\Esercizio di Gruppo\obj\Debug\net9.0\Esercizio di Gruppo.AssemblyInfo.cs
+C:\Users\miche\OneDrive\Desktop\corsoc#\Progetto_16-10-2025\Esercizio di Gruppo\obj\Debug\net9.0\Esercizio di Gruppo.csproj.CoreCompileInputs.cache
+C:\Users\miche\OneDrive\Desktop\corsoc#\Progetto_16-10-2025\Esercizio di Gruppo\obj\Debug\net9.0\Esercizio di Gruppo.sourcelink.json
+C:\Users\miche\OneDrive\Desktop\corsoc#\Progetto_16-10-2025\Esercizio di Gruppo\obj\Debug\net9.0\Esercizio di Gruppo.dll
+C:\Users\miche\OneDrive\Desktop\corsoc#\Progetto_16-10-2025\Esercizio di Gruppo\obj\Debug\net9.0\refint\Esercizio di Gruppo.dll
+C:\Users\miche\OneDrive\Desktop\corsoc#\Progetto_16-10-2025\Esercizio di Gruppo\obj\Debug\net9.0\Esercizio di Gruppo.pdb
+C:\Users\miche\OneDrive\Desktop\corsoc#\Progetto_16-10-2025\Esercizio di Gruppo\obj\Debug\net9.0\Esercizio di Gruppo.genruntimeconfig.cache
+C:\Users\miche\OneDrive\Desktop\corsoc#\Progetto_16-10-2025\Esercizio di Gruppo\obj\Debug\net9.0\ref\Esercizio di Gruppo.dll
