@@ -259,7 +259,7 @@ public class Program
 {
     public static void Main()
     {
-                var sn = SocialNetWork.Instance;
+        var sn = SocialNetWork.Instance;
         bool continua = true;
 
         while (continua)
@@ -374,20 +374,21 @@ public class Program
                     Console.WriteLine("2 - Per Hashtag");
                     IFeed feedStrategy;
                     string? sceltaFeed = Console.ReadLine();
-                    switch(sceltaFeed)
+                    switch (sceltaFeed)
                     {
                         case "1":
                             feedStrategy = new FeedData();
                             break;
                         case "2":
                             Console.WriteLine("Scegli hashtag per filtrare: ");
-                            
+
                             break;
                     }
-                    
-                    break;
-            }      
 
+                    break;
+            }
+
+        }
     }
 }    
 
