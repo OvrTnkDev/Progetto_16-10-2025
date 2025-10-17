@@ -41,7 +41,7 @@ public sealed class SocialNetWork : IObservable
     {
         foreach (var observer in obs)
         {
-            obs.CaricaPost(post);
+            observer.CaricaPost(post);
         }
     }
 }
@@ -50,7 +50,7 @@ public sealed class SocialNetWork : IObservable
 #region FACTORY METHOD
 public abstract class Utenti : IObserver
 {
-    public string Nome { get; set; }
+    public string? Nome { get; set; }
     public List<Utenti> Followings = new();
     public List<Post> Posts = new();
 
@@ -210,8 +210,6 @@ public class TagPost : PostDecorator
 #endregion
 
 #region DECORATORE ASTRATTO
-// 3. Decorator: classe astratta che implementa IComponent
-//    e incapsula un IComponent interno
 public abstract class PostDecorator : Post
 {
     protected Post post;
@@ -257,111 +255,140 @@ public class FeedHashtag : IFeed
 #endregion
 
 #region MAIN
-// Esempio di utilizzo (Client)
-class Program
+public class Program
 {
-    static void Main()
+    public static void Main()
     {
-        Console.Clear();
+                var sn = SocialNetWork.Instance;
         bool continua = true;
 
         while (continua)
         {
-            Console.WriteLine("=== Benvenuto nella Cucina dello Chef ===");
-            Console.WriteLine("Scegli il piatto:");
-            Console.WriteLine("1 - Pizza");
-            Console.WriteLine("2 - Hamburger");
-            Console.WriteLine("3 - Insalata");
+            Console.Clear();
+            Console.WriteLine("=== Benvenuto nel Social Network ===");
+            Console.WriteLine("1 - Crea utente");
+            Console.WriteLine("2 - Segui utente");
+            Console.WriteLine("3 - Pubblica post");
+            Console.WriteLine("4 - Visualizza feed");
             Console.WriteLine("0 - Esci");
 
-            string sceltaBase = Console.ReadLine();
-            IPiatto piatto = sceltaBase switch
+            string? scelta = Console.ReadLine();
+            switch (scelta)
             {
-                "1" => PiattoFactory.Instance.CreaPiatto("pizza"),
-                "2" => PiattoFactory.Instance.CreaPiatto("hamburger"),
-                "3" => PiattoFactory.Instance.CreaPiatto("insalata"),
-                "0" => null,
-                _ => null
-            };
-
-            if (piatto == null)
-            {
-                if (sceltaBase == "0")
-                {
-                    Console.WriteLine("Arrivederci!");
+                case "1":
+                    Console.Write("Inserisci il nome utente: ");
+                    string? nome = Console.ReadLine();
+                    Console.Write("Tipo utente (base/premium/business): ");
+                    string? tipo = Console.ReadLine();
+                    var utente = UtentiFactory.CreaUtente(tipo, nome);
+                    if (utente != null)
+                    {
+                        sn.AggiungiUtente(utente);
+                        sn.Attach(utente);
+                        Console.WriteLine(utente.MostraInfo());
+                    }
+                    Console.WriteLine("Premi un tasto per continuare...");
+                    Console.ReadKey();
                     break;
-                }
-                Console.WriteLine("Scelta non valida.\n");
-                continue;
-            }
 
-            bool piattoTerminato = false;
-            while (!piattoTerminato)
-            {
-                Console.WriteLine("\nAggiungi ingredienti extra:");
-                Console.WriteLine("1 - Formaggio");
-                Console.WriteLine("2 - Bacon");
-                Console.WriteLine("3 - Salsa");
-                Console.WriteLine("0 - Nessuna/Finito");
+                case "2":
+                    if (sn.GetUtenti().Count < 2)
+                    {
+                        Console.WriteLine("Servono almeno 2 utenti per seguire!");
+                        Console.ReadKey();
+                        break;
+                    }
 
-                string sceltaDeco = Console.ReadLine();
-                switch (sceltaDeco)
-                {
-                    case "1":
-                        piatto = new ConFormaggio(piatto);
-                        break;
-                    case "2":
-                        piatto = new ConBacon(piatto);
-                        break;
-                    case "3":
-                        piatto = new ConSalsa(piatto);
-                        break;
-                    case "0":
-                        piattoTerminato = true;
-                        break;
-                    default:
-                        Console.WriteLine("Scelta decorazione non valida.");
-                        break;
-                }
-            }
+                    Console.WriteLine("Scegli chi segue:");
+                    for (int i = 0; i < sn.GetUtenti().Count; i++)
+                        Console.WriteLine($"{i} - {sn.GetUtenti()[i].Nome}");
+                    int followerIndex = int.Parse(Console.ReadLine());
+                    Console.WriteLine("Scegli chi essere seguito:");
+                    int followingIndex = int.Parse(Console.ReadLine());
 
-            bool cotturaTerminata = false;
-            while (!cotturaTerminata)
-            {
-                Console.WriteLine("\nAggiungi ingredienti extra:");
-                Console.WriteLine("1 - Al Forno");
-                Console.WriteLine("2 - Alla Griglia");
-                Console.WriteLine("3 - Fritto");
-                Console.WriteLine("0 - Nessuna/Finito");
+                    var follower = sn.GetUtenti()[followerIndex];
+                    var following = sn.GetUtenti()[followingIndex];
+                    if (follower != following)
+                    {
+                        follower.Segui(following);
+                        Console.WriteLine($"{follower.Nome} ora segue {following.Nome}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Non puoi seguire te stesso!");
+                    }
+                    Console.ReadKey();
+                    break;
+                case "3":
+                    if (sn.GetUtenti().Count == 0)
+                    {
+                        Console.WriteLine("Non ci sono utenti registrati.");
+                        break;
+                    }
+                    Console.WriteLine("Scegli l'autore del post: ");
+                    for (int i = 0; i < sn.GetUtenti().Count; i++)
+                    {
+                        Console.WriteLine($"{i}  - {sn.GetUtenti()[i].Nome}");
+                    }
+                    int autoreIndex = int.Parse(Console.ReadLine());
+                    var autore = sn.GetUtenti()[autoreIndex];
 
-                string sceltaCottura = Console.ReadLine();
-                switch (sceltaCottura)
-                {
-                    case "1":
-                        new Chef(new AlForno()).PreparaPiatto(piatto);
-                        cotturaTerminata = true;
-                        break;
-                    case "2":
-                        new Chef(new AllaGriglia()).PreparaPiatto(piatto);
-                        cotturaTerminata = true;
-                        break;
-                    case "3":
-                        new Chef(new Fritto()).PreparaPiatto(piatto);
-                        cotturaTerminata = true;
-                        break;
-                    case "0":
-                        cotturaTerminata = true;
-                        break;
-                    default:
-                        Console.WriteLine($"Scelta non valida");
-                        break;
-                }
-            }
 
-            Console.WriteLine("\nEcco il tuo piatto:");
-            Console.WriteLine(piatto.Descrizione());
-            Console.WriteLine("\n------------------------------\n");
-        }
+                    Console.WriteLine("Scrivi il contenuto del post: ");
+                    string? contenuto = Console.ReadLine();
+                    var post = new Post(autore, contenuto);
+
+                    Console.WriteLine("Vuoi inserire hashtag? (s/n): ");
+                    if (Console.ReadLine().ToLower() == "s")
+                    {
+                        Console.WriteLine("Inserisci hashtag separati da spazio: ");
+                        post.Hashtags.AddRange(Console.ReadLine().Split(' '));
+                    }
+
+                    Console.WriteLine("Vuoi inserire un'immagine? (s/n): ");
+                    if (Console.ReadLine().ToLower() == "s")
+                    {
+                        Console.WriteLine("Inserisci URL immagine: ");
+                        post = new ImagePost(post, Console.ReadLine());
+                    }
+
+                    Console.WriteLine("Vuoi inserire tag? (s/n): ");
+                    if (Console.ReadLine().ToLower() == "s")
+                    {
+                        Console.WriteLine("Inserisci tag separati da spazio: ");
+                        post = new TagPost(post, Console.ReadLine().Split(' ').ToList());
+                    }
+
+                    autore.AggiungiPost(post);
+                    Console.WriteLine("Post pubblicato");
+                    break;
+                case "4":
+                    if (sn.GetPost().Count == 0)
+                    {
+                        Console.WriteLine("Non ci sono post");
+                        break;
+                    }
+
+                    Console.WriteLine("Scegli tipo di feed: ");
+                    Console.WriteLine("1 - Per Data");
+                    Console.WriteLine("2 - Per Hashtag");
+                    IFeed feedStrategy;
+                    string? sceltaFeed = Console.ReadLine();
+                    switch(sceltaFeed)
+                    {
+                        case "1":
+                            feedStrategy = new FeedData();
+                            break;
+                        case "2":
+                            Console.WriteLine("Scegli hashtag per filtrare: ");
+                            
+                            break;
+                    }
+                    
+                    break;
+            }      
+
     }
-}
+}    
+
 #endregion
